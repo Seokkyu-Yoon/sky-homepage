@@ -1,8 +1,8 @@
 {
   "watch": [
-    "./web/backend/*"
+    "src/*"
   ],
-  "ignore": [
-    "./web/backend/public"
-  ]
+  "env": {
+    "NODE_ENV": "development"
+  }
 }
