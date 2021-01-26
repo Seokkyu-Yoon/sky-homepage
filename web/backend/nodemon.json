@@ -1,0 +1,8 @@
+{
+  "watch": [
+    "./web/backend/*"
+  ],
+  "ignore": [
+    "./web/backend/public"
+  ]
+}
