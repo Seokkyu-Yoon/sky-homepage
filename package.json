@@ -1,0 +1,23 @@
+{
+  "name": "sky-homepage",
+  "version": "1.0.0",
+  "description": "--- ## introduction I will make my homepage with web, desktop app, and mobile",
+  "main": "index.js",
+  "scripts": {
+    "start": "docker-compose up -d",
+    "connect": "docker exec -it homepage-db bash",
+    "stop": "docker-compose down",
+    "clear": "rm -rf mysql"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Seokkyu-Yoon/sky-homepage.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Seokkyu-Yoon/sky-homepage/issues"
+  },
+  "homepage": "https://github.com/Seokkyu-Yoon/sky-homepage#readme"
+}
