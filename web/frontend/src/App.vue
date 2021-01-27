@@ -2,26 +2,19 @@
   <div class="d-flex flex-column" id="app">
     <Navbar />
     <router-view v-if="typeof $store.state.user.id !== 'undefined'" />
-    <Login v-else />
+    <Sign v-else />
   </div>
 </template>
 
 <script>
 import Navbar from '@/components/Navbar.vue'
-import Login from '@/components/Login.vue'
+import Sign from '@/views/Sign.vue'
 
 export default {
   name: 'App',
   components: {
     Navbar,
-    Login
-  },
-  watch: {
-    $store: {
-      handler (value) {
-        console.log(value)
-      }
-    }
+    Sign
   }
 }
 </script>

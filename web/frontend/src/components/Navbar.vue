@@ -11,7 +11,7 @@
         />
       </b-form-group>
       {{$store.state.user.name}}님 환영합니다
-      <b-btn class="ml-2" v-on:click="logout">logout</b-btn>
+      <b-btn class="ml-2" v-on:click="signOut">logout</b-btn>
     </div>
   </b-navbar>
 </template>
@@ -26,8 +26,8 @@ export default {
     }
   },
   methods: {
-    logout () {
-      this.$store.commit('logout')
+    signOut () {
+      this.$store.commit('signOut')
     }
   },
   watch: {

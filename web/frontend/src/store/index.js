@@ -8,10 +8,10 @@ export default new Vuex.Store({
     user: {}
   },
   mutations: {
-    login (state, user = {}) {
+    signIn (state, user = {}) {
       state.user = user
     },
-    logout (state) {
+    signOut (state) {
       state.user = {}
     }
   },
