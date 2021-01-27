@@ -17,7 +17,7 @@
     "postinstall": ""
   },
   "build": {
-    "productName": "desktop",
+    "productName": "sky-homepage-desktop",
     "appId": "sky.homepage",
     "directories": {
       "output": "build"
