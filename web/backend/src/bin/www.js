@@ -5,11 +5,14 @@ import '../module-alias'
  */
 import http from 'http'
 import app from '@/app'
+import logger from '@/core/logger'
+
+import initMysql from '@/core/mysql/init'
 
 /**
  * Get port from environment and store in Express.
  */
-const port = process.env.SERVER_PORT || 3000
+const port = process.env.SERVER_PORT || 3003
 app.set('port', port)
 
 /**
@@ -46,17 +49,17 @@ function onError (error) {
  * Event listener for HTTP server "listening" event.
  */
 function onListening () {
-  const addr = server.address()
-  const bind = typeof addr === 'string'
-    ? `pipe ${addr}`
-    : `port ${addr.port}`
-  console.log(`Listening on ${bind}`)
-  console.log(`http://localhost:${port}`)
+  logger.info(`Listening on http://localhost:${port}`)
 }
 
 /**
  * Listen on provided port, on all network interfaces.
  */
-server.on('error', onError)
-server.on('listening', onListening)
-server.listen(port)
+async function main () {
+  await initMysql()
+  server.on('error', onError)
+  server.on('listening', onListening)
+  server.listen(port)
+}
+
+main()

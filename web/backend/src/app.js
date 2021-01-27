@@ -5,6 +5,7 @@ import logger from 'morgan'
 import cors from 'cors'
 import ejs from 'ejs'
 
+import router from './router'
 const app = express()
 
 // view engine setup
@@ -21,8 +22,6 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, '..', 'public')))
 
-app.get('/*', (req, res, next) => {
-  res.render('index.html')
-})
+app.use('/', router)
 
 export default app
