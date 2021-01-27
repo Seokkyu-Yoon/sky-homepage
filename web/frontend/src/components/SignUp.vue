@@ -15,20 +15,14 @@
         placeholder="비밀번호를 입력해주세요"
         v-model="pw"
         v-on:focus="() => { pw = '' }"
-        v-on:keydown.enter="() => { $refs.name.focus() }"
-        v-on:keydown.delete="() => {
-          if (pw === '') $refs.id.focus()
-        }"/>
+        v-on:keydown.enter="() => { $refs.name.focus() }"/>
       <b-form-input
         ref="name"
         class="mt-1"
         placeholder="이름을 입력해주세요"
         v-model="name"
         v-on:focus="() => { name = '' }"
-        v-on:keydown.enter="signUp(id, pw, name)"
-        v-on:keydown.delete="() => {
-          if (name === '') $refs.pw.focus()
-        }"/>
+        v-on:keydown.enter="signUp(id, pw, name)"/>
       <div class="mt-1">
         <b-btn class="mr-1" variant="primary" v-on:click="signUp">가입</b-btn>
         <b-btn variant="danger" v-on:click="cancel">취소</b-btn>

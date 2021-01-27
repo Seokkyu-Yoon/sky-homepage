@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import Home from '../views/Home.vue'
-import Storage from '../views/Storage.vue'
+import Home from '@/views/Home.vue'
+import Board from '@/views/Board.vue'
+import Photo from '@/views/Photo.vue'
+import Video from '@/views/Video.vue'
 
 Vue.use(VueRouter)
 
@@ -13,9 +15,19 @@ const routes = [
     component: Home
   },
   {
-    path: '/storage',
-    name: 'Storage',
-    component: Storage
+    path: '/board',
+    name: 'Board',
+    component: Board
+  },
+  {
+    path: '/photo',
+    name: 'Photo',
+    component: Photo
+  },
+  {
+    path: '/Video',
+    name: 'Video',
+    component: Video
   }
 ]
 

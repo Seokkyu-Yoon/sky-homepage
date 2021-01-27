@@ -16,10 +16,7 @@
           placeholder="비밀번호를 입력해주세요"
           v-model="pw"
           v-on:focus="() => { pw = ''}"
-          v-on:keydown.enter="signIn"
-          v-on:keydown.delete="() => {
-            if (pw === '') $refs.id.focus()
-          }"/>
+          v-on:keydown.enter="signIn"/>
       </b-form-group>
       <b-btn variant="primary" v-on:click="() => signIn(id, pw)">로그인</b-btn>
       <b-btn class="ml-1" variant="success" v-on:click="() => signUp()">회원가입</b-btn>
