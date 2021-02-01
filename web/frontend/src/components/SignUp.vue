@@ -22,9 +22,9 @@
         placeholder="이름을 입력해주세요"
         v-model="name"
         v-on:focus="() => { name = '' }"
-        v-on:keydown.enter="signUp(id, pw, name)"/>
+        v-on:keydown.enter="() => signUp(id, pw, name)"/>
       <div class="mt-1">
-        <b-btn class="mr-1" variant="primary" v-on:click="signUp">가입</b-btn>
+        <b-btn class="mr-1" variant="primary" v-on:click="() => signUp(id, pw, name)">가입</b-btn>
         <b-btn variant="danger" v-on:click="cancel">취소</b-btn>
       </div>
     </b-form-group>

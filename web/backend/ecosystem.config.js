@@ -6,7 +6,10 @@ module.exports = {
       instances: 0,
       exec_mode: 'cluster',
       env: {
-        NODE_ENV: 'distribute'
+        NODE_ENV: 'distribute',
+        MYSQL_IP: 'localhost',
+        MYSQL_PORT: 3001,
+        MYSQL_DATABASE: 'homepage'
       }
     }
   ]

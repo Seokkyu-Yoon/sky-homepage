@@ -25,10 +25,14 @@ export default {
       this.page = page
     },
     signIn (id, pw) {
-      this.$store.commit('signIn', { id, pw, name: '윤석규' })
+      this.$get('/api/sign', { id, pw }).then(({ data: user }) => {
+        this.$store.commit('signIn', user)
+      }).catch(console.log)
     },
     signUp (id, pw, name) {
-      this.$store.commit('signIn', { id, pw, name })
+      this.$post('/api/sign', { id, pw, name }).then(() => {
+        this.$store.commit('signIn', { id, name })
+      }).catch(console.log)
     }
   }
 }

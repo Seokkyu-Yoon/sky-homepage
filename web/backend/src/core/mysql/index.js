@@ -1,48 +1,76 @@
 import Connection from './connection'
-import getSql from './sqls'
+import getSqlParams from './sqlParams'
+import logger from '@/core/logger'
 
-async function selectAllTableNames (payload = { database: '' }) {
+const TABLE_CREATE_MAP = {
+  user: exec.bind(null, 'createTableUser'),
+  board: exec.bind(null, 'createTableBoard'),
+  photo: exec.bind(null, 'createTablePhoto'),
+  board_user: exec.bind(null, 'createTableBoardUser'),
+  board_photo: exec.bind(null, 'createTableBoardPhoto')
+}
+
+async function exec (action = '', payload = {}) {
   const connection = new Connection()
-  const sql = getSql('selectAllTableNames', payload)
-  const result = await connection.query(sql)
+  const sqlParams = getSqlParams(action, payload)
+  const result = await connection.query(sqlParams)
   return result
 }
 
-async function createTableUser (payload = {}) {
+async function transaction (actions = [], payload = {}) {
   const connection = new Connection()
-  const sql = getSql('createTableUser', payload)
-  await connection.query(sql)
+  const sqlParams = actions.map((action) => getSqlParams(action, payload))
+  const results = await connection.transaction(sqlParams)
+  return results
 }
 
-async function createTableBoard (payload = {}) {
-  const connection = new Connection()
-  const sql = getSql('createTableBoard', payload)
-  await connection.query(sql)
+const init = async (payload = {}) => {
+  const mysqlTables = await exec('selectAllTableNames', payload)
+  for (const tableCreateKey in TABLE_CREATE_MAP) {
+    const isExists = mysqlTables.some(({ tableName }) => tableName === tableCreateKey)
+    if (isExists) {
+      logger.info(`${tableCreateKey} already exists`)
+      continue
+    }
+    const createTable = TABLE_CREATE_MAP[tableCreateKey]
+    if (typeof createTable !== 'function') throw new Error('not defined create table')
+    await createTable(payload)
+    logger.info(`${tableCreateKey} create done`)
+  }
 }
 
-async function createTablePhoto (payload = {}) {
-  const connection = new Connection()
-  const sql = getSql('createTablePhoto', payload)
-  await connection.query(sql)
+const signIn = async (payload = {}) => {
+  const result = await exec('selectUser', payload)
+  const user = result[0]
+  if (user.pw !== payload.pw) throw new Error('Invalid to signIn')
+  return user
 }
+const signUp = async (payload = {}) => await exec('insertUser', payload)
 
-async function createTableBoardUser (payload = {}) {
-  const connection = new Connection()
-  const sql = getSql('createTableBoardUser', payload)
-  await connection.query(sql)
+const getBoards = async (payload = {}) => await exec('selectBoards', payload)
+const getBoard = async (payload = {}) => {
+  const result = await exec.bind('selectBoard', payload)
+  const board = result[0]
+  return board
 }
-
-async function createTableBoardPhoto (payload = {}) {
-  const connection = new Connection()
-  const sql = getSql('createTableBoardPhoto', payload)
-  await connection.query(sql)
+const addBoard = async (payload = {}) => {
+  const actions = [
+    'insertBoard',
+    'selectLastBoardIndex',
+    'insertPhoto',
+    'selectLastPhotoIndex',
+    'insertBoardPhoto'
+  ]
+  await transaction(actions, payload)
 }
 
 export default {
-  selectAllTableNames,
-  createTableUser,
-  createTableBoard,
-  createTablePhoto,
-  createTableBoardUser,
-  createTableBoardPhoto
+  init,
+
+  signIn,
+  signUp,
+
+  getBoards,
+  getBoard,
+  addBoard
 }

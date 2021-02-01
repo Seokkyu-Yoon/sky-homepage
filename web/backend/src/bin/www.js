@@ -7,7 +7,7 @@ import http from 'http'
 import app from '@/app'
 import logger from '@/core/logger'
 
-import initMysql from '@/core/mysql/init'
+import mysql from '@/core/mysql'
 
 /**
  * Get port from environment and store in Express.
@@ -56,7 +56,7 @@ function onListening () {
  * Listen on provided port, on all network interfaces.
  */
 async function main () {
-  await initMysql()
+  await mysql.init({ database: 'homepage' })
   server.on('error', onError)
   server.on('listening', onListening)
   server.listen(port)
