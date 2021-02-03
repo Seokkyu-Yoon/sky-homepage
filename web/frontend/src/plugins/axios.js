@@ -7,12 +7,14 @@ const pluginAxios = {
       $get: (route, params) => $axios({
         method: 'GET',
         url: `${process.env.VUE_APP_SERVER || ''}${route}`,
-        params
+        params,
+        withCredentials: true
       }),
       $post: (route, data) => $axios({
         method: 'POST',
         url: `${process.env.VUE_APP_SERVER || ''}${route}`,
-        data
+        data,
+        withCredentials: true
       })
     })
   }

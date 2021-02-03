@@ -2,6 +2,9 @@
   "watch": [
     "src/*"
   ],
+  "ignore": [
+    "*.test.js"
+  ],
   "env": {
     "NODE_ENV": "development",
     "MYSQL_IP": "localhost",

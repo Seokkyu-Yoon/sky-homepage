@@ -1,10 +1,8 @@
 import { Router } from 'express'
 
-import signRouter from './sign'
-import boardRouter from './board'
+import routerBoard from './board'
 
 const router = Router()
 
-router.use('/sign', signRouter)
-router.use('/board', boardRouter)
+router.use('/board', routerBoard)
 export default router

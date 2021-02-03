@@ -10,7 +10,7 @@ function Connection () {
 function query ({ connection, sql = '', params = [] }) {
   return new Promise((resolve, reject) => {
     connection.query(sql, params, (err, result) => {
-      err ? reject(err) : resolve(result)
+      return err ? reject(err) : resolve(result)
     })
   })
 }
@@ -25,16 +25,16 @@ function transaction ({ connection, sqlParamSets = [] }) {
           results.push(result)
         } catch (e) {
           connection.rollback()
-          reject(e)
+          return reject(e)
         }
       }
 
       if (err) {
         connection.rollback()
-        reject(err)
+        return reject(err)
       } else {
         connection.commit()
-        resolve(results)
+        return resolve(results)
       }
     })
   })

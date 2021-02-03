@@ -27,7 +27,8 @@ export default {
   },
   methods: {
     signOut () {
-      this.$store.commit('signOut')
+      this.$cookies.remove('accessToken')
+      this.$store.commit('signout')
     }
   },
   watch: {

@@ -42,6 +42,7 @@ const init = async (payload = {}) => {
 const signIn = async (payload = {}) => {
   const result = await exec('selectUser', payload)
   const user = result[0]
+  if (typeof user === 'undefined') throw new Error('User not exists')
   if (user.pw !== payload.pw) throw new Error('Invalid to signIn')
   return user
 }
