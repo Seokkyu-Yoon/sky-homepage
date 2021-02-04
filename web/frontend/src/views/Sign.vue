@@ -10,12 +10,12 @@
       {{alertMessage}}
     </b-alert>
       <Signin
-        v-if="isShow('in')"
+        v-if="showSignin"
         ref="signin"
         v-bind:signin="signin"
         v-bind:moveToSignup="moveToSignup"/>
       <Signup
-        v-else-if="isShow('up')"
+        v-else-if="showSignup"
         ref="signup"
         v-bind:signup="signup"
         v-bind:moveToSignin="moveToSignin"/>
@@ -41,8 +41,16 @@ export default {
       alertMessage: ''
     }
   },
+  computed: {
+    showSignin () {
+      return this.pageIs('in')
+    },
+    showSignup () {
+      return this.pageIs('up')
+    }
+  },
   methods: {
-    isShow (page) {
+    pageIs (page) {
       return this.page === page
     },
     moveTo (page) {

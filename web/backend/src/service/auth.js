@@ -8,12 +8,11 @@ import {
   InvalidSigninError,
   InvalidSignupError,
   InvalidTokenError
-} from '../errors'
+} from '@/errors'
 
 const removeSpaces = (str) => str.replace(/(\s*)/g, '')
 
-async function auth ({ accessToken }) {
-  console.log(accessToken)
+async function auth (accessToken) {
   if (accessToken === null) return {}
 
   try {

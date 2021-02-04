@@ -7,8 +7,6 @@ export default class CustomError extends Error {
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, CustomError)
     }
-
-    console.log(mapKey, STATE_MAP[mapKey])
     this.status = STATE_MAP[mapKey]
     this.code = CODE_MAP[mapKey]
     this.message = MESSAGE_MAP[mapKey]

@@ -10,7 +10,6 @@ const router = Router()
 router.post('/', async (req, res, next) => {
   try {
     const { accessToken = null } = req.cookies
-    console.log(accessToken)
     const { id, name, refreshToken } = await serviceAuth.auth(accessToken)
     res.cookie('accessToken', refreshToken, ConfigCookie)
     res.send({ id, name })
@@ -31,7 +30,6 @@ router.post('/signin', async (req, res, next) => {
     res.cookie('accessToken', accessToken, ConfigCookie)
     res.send({ id, name })
   } catch (e) {
-    console.log(e)
     res.clearCookie('accessToken')
     next(createError(e.status, e))
   }
