@@ -1,3 +1,4 @@
+import jwt from '@/core/jwt'
 import mysql from '@/core/mysql'
 import { FailToAddBoardError, FailToGetBoardError } from '@/errors'
 
@@ -11,9 +12,10 @@ function get (id, startIndex) {
   }
 }
 
-async function add (title, description, mediaList) {
+async function add (accessToken, title, description, contents) {
   try {
-    await mysql.addBoard({ title, description, mediaList })
+    const { data: { id: writter } } = await jwt.verify(accessToken)
+    await mysql.addBoard({ title, description, contents, writter })
   } catch (e) {
     throw new FailToAddBoardError()
   }

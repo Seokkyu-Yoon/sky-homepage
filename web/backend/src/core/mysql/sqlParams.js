@@ -33,10 +33,12 @@ function createTableBoard () {
     sql: `
     CREATE TABLE board (
       id INT NOT NULL AUTO_INCREMENT,
+      writter VARCHAR(20) NOT NULL,
       title TEXT NOT NULL,
       description TEXT,
       upload_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      PRIMARY KEY (id)
+      PRIMARY KEY (id),
+      FOREIGN KEY (writter) REFERENCES user (id) ON UPDATE CASCADE ON DELETE CASCADE
     )
     `,
     params: []
@@ -136,6 +138,8 @@ function insertUser ({ id = '', pw = '', name = '' }) {
 }
 
 function selectBoards ({ startIndex = 0 }) {
+  if (typeof startIndex !== 'number') throw new Error('startIndex is must number')
+  if (startIndex < 0) throw new Error('startIndex is must upper than 0')
   return {
     sql: `
     SELECT *
@@ -148,6 +152,7 @@ function selectBoards ({ startIndex = 0 }) {
     ]
   }
 }
+
 function selectBoard ({ id = -1 }) {
   if (typeof id !== 'number') throw new Error('typeof id is must number')
   if (id < 0) throw new Error('id is must upper than 0')
@@ -160,6 +165,45 @@ function selectBoard ({ id = -1 }) {
     `,
     params: [
       id
+    ]
+  }
+}
+
+function insertBoard ({ title = '', writter = '', description = '' }) {
+  if (typeof title !== 'string') throw new Error('title is must string')
+  if (typeof description !== 'string') throw new Error('description is must string')
+  if (!title) throw new Error('title is empty')
+
+  return {
+    sql: `
+    INSERT INTO board (title, writter, description) VALUES
+    (?, ?, ?)
+    `,
+    params: [
+      title,
+      writter,
+      description
+    ]
+  }
+}
+
+function setBoardId () {
+  return {
+    sql: `
+    SET @board_id = LAST_INSERT_ID()
+    `,
+    params: []
+  }
+}
+
+function insertBoardUser ({ userId = '' }) {
+  return {
+    sql: `
+    INSERT INTO board_user (board_id, user_id) VALUES
+    ((SELECT @board_id), ?)
+    `,
+    params: [
+      userId
     ]
   }
 }
@@ -177,6 +221,9 @@ function get (action, payload = {}) {
 
   if (action === 'selectBoards') return selectBoards(payload)
   if (action === 'selectBoard') return selectBoard(payload)
+  if (action === 'insertBoard') return insertBoard(payload)
+  if (action === 'setBoardId') return setBoardId(payload)
+  if (action === 'insertBoardUser') return insertBoardUser(payload)
 
   throw new Error('not defined action')
 }

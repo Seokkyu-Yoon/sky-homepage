@@ -48,21 +48,39 @@ const signIn = async (payload = {}) => {
 }
 const signUp = async (payload = {}) => await exec('insertUser', payload)
 
-const getBoards = async (payload = {}) => await exec('selectBoards', payload)
+const getBoards = async (payload = {}) => {
+  const boards = await exec('selectBoards', payload)
+  const count = boards.length
+  return { boards, count }
+}
 const getBoard = async (payload = {}) => {
   const result = await exec.bind('selectBoard', payload)
   const board = result[0]
   return board
 }
 const addBoard = async (payload = {}) => {
-  const actions = [
+  const actionsInsertBoard = [
     'insertBoard',
-    'selectLastBoardIndex',
-    'insertPhoto',
-    'selectLastPhotoIndex',
-    'insertBoardPhoto'
+    'setBoardId',
+    'insertBoardUser'
   ]
-  await transaction(actions, payload)
+  await transaction(actionsInsertBoard, payload)
+
+  if (payload.contents.length < 1) return
+  // todo upload files first
+  const actionsInsertContents = [
+    'insertContent',
+    'setContentId',
+    'insertBoardContent'
+  ]
+  await Promise.all(
+    payload.contents.map(
+      (content) => transaction(
+        actionsInsertContents,
+        { ...payload, ...content }
+      )
+    )
+  )
 }
 
 export default {
