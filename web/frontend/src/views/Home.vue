@@ -6,6 +6,15 @@
 
 <script>
 export default {
-  name: 'Home'
+  name: 'Home',
+  data () {
+    return {
+      loadingCount: 0,
+      timeout: undefined
+    }
+  },
+  methods: {
+
+  }
 }
 </script>

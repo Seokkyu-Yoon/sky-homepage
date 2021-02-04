@@ -5,9 +5,9 @@ import logger from '@/core/logger'
 const TABLE_CREATE_MAP = {
   user: exec.bind(null, 'createTableUser'),
   board: exec.bind(null, 'createTableBoard'),
-  photo: exec.bind(null, 'createTablePhoto'),
+  content: exec.bind(null, 'createTableContent'),
   board_user: exec.bind(null, 'createTableBoardUser'),
-  board_photo: exec.bind(null, 'createTableBoardPhoto')
+  board_content: exec.bind(null, 'createTableBoardContent')
 }
 
 async function exec (action = '', payload = {}) {

@@ -1,7 +1,7 @@
 <template>
-  <div class="m-auto">
+  <div class="d-flex flex-column flex-fill">
     <b-alert
-      class="mt-2"
+      class="mt-5 alert"
       variant="danger"
       :show="dismissCountDown"
       fade
@@ -9,10 +9,17 @@
       @dismissed="dismissed">
       {{alertMessage}}
     </b-alert>
-    <div class="m-auto" v-if="page === 'in'">
-      <Signin ref="signIn" v-bind:signin="signin" v-bind:signup="() => moveTo('up')"/>
-    </div>
-    <Signup ref="signUp" v-else-if="page === 'up'" v-bind:signup="signup" v-bind:cancel="() => moveTo('in')"/>
+      <Signin
+        v-if="isShow('in')"
+        ref="signin"
+        v-bind:signin="signin"
+        v-bind:moveToSignup="moveToSignup"/>
+      <Signup
+        v-else-if="isShow('up')"
+        ref="signup"
+        v-bind:signup="signup"
+        v-bind:moveToSignin="moveToSignin"/>
+      <div v-else />
   </div>
 </template>
 
@@ -35,53 +42,65 @@ export default {
     }
   },
   methods: {
+    isShow (page) {
+      return this.page === page
+    },
     moveTo (page) {
       this.page = page
     },
+    moveToSignup () {
+      this.moveTo('up')
+    },
+    moveToSignin () {
+      this.moveTo('in')
+    },
     signin (id, pw) {
       this.$post('/auth/signin', { id, pw })
-        .then(({ data: user }) => {
-          this.$store.commit('signin', user)
-        })
-        .catch(this.showAlert)
+        .then(this.successToSign)
+        .catch(this.failToSignin)
     },
     signup (id, pw, name) {
       this.$post('/auth/signup', { id, pw, name })
-        .then(({ data: user }) => this.$store.commit('signin', user))
-        .catch(this.showAlert)
+        .then(this.successToSign)
+        .catch(this.failToSignup)
     },
-    showAlert (e) {
-      const { code, message } = e.response.data
+    showAlert (message) {
       this.alertMessage = message
-
       this.dismissCountDown = this.dismissSecs
-      if (this.page === 'in') {
-        const { signIn } = this.$refs
-        const { $refs: { id, pw } } = signIn
-
-        if (code === 301) return id.focus()
-        if (code === 302) return pw.focus()
-
-        signIn.pw = ''
-        id.focus()
-      } else if (this.page === 'up') {
-        const { signUp } = this.$refs
-        const { $refs: { id, pw, name } } = signUp
-
-        if (code === 301) return id.focus()
-        if (code === 302) return pw.focus()
-        if (code === 303) return name.focus()
-
-        signUp.pw = ''
-        signUp.name = ''
-        id.focus()
-      }
     },
     dismissChanged (dismissCountDown) {
       this.dismissCountDown = dismissCountDown
     },
     dismissed () {
       this.dismissCountDown = 0
+    },
+    successToSign ({ data: user }) {
+      this.$store.commit('signin', user)
+    },
+    failToSignin ({ code, message }) {
+      this.showAlert(message)
+
+      const { signin } = this.$refs
+      const { $refs: { id, pw } } = signin
+
+      if (code === 301) return id.focus()
+      if (code === 302) return pw.focus()
+      signin.resetPw()
+      id.focus()
+    },
+    failToSignup ({ code, message }) {
+      this.showAlert(message)
+
+      const { signup } = this.$refs
+      const { $refs: { id, pw, name } } = signup
+
+      if (code === 301) return id.focus()
+      if (code === 302) return pw.focus()
+      if (code === 303) return name.focus()
+
+      signup.resetPw()
+      signup.resetName()
+      id.focus()
     }
   },
   watch: {
@@ -95,6 +114,11 @@ export default {
 </script>
 
 <style scoped>
+.alert {
+  position: absolute;
+  left: 33%;
+  right: 33%;
+}
 .btn:focus {
   outline: none;
   box-shadow: none;

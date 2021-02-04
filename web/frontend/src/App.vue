@@ -3,8 +3,8 @@
     <div v-if="loading">로딩 중...({{loadingCount}}초 경과)</div>
     <div class="d-flex flex-column flex-fill" v-else>
       <Navbar />
-      <router-view v-if="typeof $store.state.user.id !== 'undefined'" />
-      <Sign v-else />
+      <Sign v-if="isShowSign" class="sign"/>
+      <router-view v-else />
     </div>
   </div>
 </template>
@@ -26,26 +26,10 @@ export default {
       timeout: undefined
     }
   },
-  beforeMount () {
-    const accessToken = this.$cookies.get('accessToken') || null
-
-    if (accessToken === null) {
-      this.loading = false
-      return
+  computed: {
+    isShowSign () {
+      return typeof this.$store.state.user.id === 'undefined'
     }
-
-    this.loadingCount = 0
-    this.timer()
-    this.autoLogin(accessToken)
-      .then(() => {
-        this.loading = false
-        clearTimeout(this.timeout)
-      })
-      .catch((e) => {
-        console.error(e)
-        clearTimeout(this.timeout)
-        this.loading = false
-      })
   },
   methods: {
     timer () {
@@ -56,10 +40,33 @@ export default {
         this.timer()
       }, 1000)
     },
+    onLoad () {
+      clearTimeout(this.timeout)
+      this.loading = false
+    },
     async autoLogin (accessToken) {
       const { data: user } = await this.$post('/auth', { accessToken })
       this.$store.commit('signin', user)
     }
+  },
+  beforeUpdate () {
+    const currRouteName = this.$router.currentRoute.name
+    const isExistsRoute = this.$router.options.routes.some(({ name }) => name === currRouteName)
+    if (isExistsRoute) return
+    this.$router.replace('/')
+  },
+  beforeMount () {
+    const accessToken = this.$cookies.get('accessToken') || null
+    if (accessToken === null) return this.onLoad()
+
+    this.loadingCount = 0
+    this.timer()
+    this.autoLogin(accessToken)
+      .then(() => this.onLoad())
+      .catch((e) => {
+        console.error(e)
+        this.onLoad()
+      })
   }
 }
 </script>

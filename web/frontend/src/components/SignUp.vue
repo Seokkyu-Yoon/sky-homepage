@@ -6,26 +6,26 @@
         ref="id"
         placeholder="아이디를 입력해주세요"
         v-model="id"
-        v-on:focus="() => { id = '' }"
-        v-on:keydown.enter="() => { $refs.pw.focus() }"/>
+        v-on:focus="resetId"
+        v-on:keydown.enter="$refs.pw.focus"/>
       <b-form-input
         ref="pw"
         class="mt-1"
         type="password"
         placeholder="비밀번호를 입력해주세요"
         v-model="pw"
-        v-on:focus="() => { pw = '' }"
-        v-on:keydown.enter="() => { $refs.name.focus() }"/>
+        v-on:focus="resetPw"
+        v-on:keydown.enter="$refs.name.focus"/>
       <b-form-input
         ref="name"
         class="mt-1"
         placeholder="이름을 입력해주세요"
         v-model="name"
-        v-on:focus="() => { name = '' }"
-        v-on:keydown.enter="() => signup(id, pw, name)"/>
+        v-on:focus="resetName"
+        v-on:keydown.enter="enter"/>
       <div class="mt-1">
-        <b-btn class="mr-1" variant="primary" v-on:click="() => signup(id, pw, name)">가입</b-btn>
-        <b-btn variant="danger" v-on:click="cancel">취소</b-btn>
+        <b-btn class="mr-1" variant="primary" v-on:click="enter">가입</b-btn>
+        <b-btn variant="danger" v-on:click="moveToSignin">취소</b-btn>
       </div>
     </b-form-group>
   </div>
@@ -36,7 +36,7 @@ export default {
   name: 'signUp',
   props: {
     signup: Function,
-    cancel: Function
+    moveToSignin: Function
   },
   data () {
     return {
@@ -47,6 +47,20 @@ export default {
   },
   mounted () {
     this.$refs.id.focus()
+  },
+  methods: {
+    resetId () {
+      this.id = ''
+    },
+    resetPw () {
+      this.pw = ''
+    },
+    resetName () {
+      this.name = ''
+    },
+    enter () {
+      this.signup(this.id, this.pw, this.name)
+    }
   }
 }
 </script>

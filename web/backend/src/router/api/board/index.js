@@ -1,30 +1,27 @@
 import { Router } from 'express'
-import mysql from '@/core/mysql'
+import createError from 'http-errors'
+import { serviceBoard } from '@/service'
+
 const router = Router()
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
   const { id = -1, startIndex = 0 } = req.query
   try {
-    if (Number(id) === -1) {
-      const boards = await mysql.getBoards({ startIndex: Number(startIndex) })
-      res.send(boards)
-      return
-    }
-    const board = await mysql.getBoard({ id })
-    res.send(board)
+    const data = await serviceBoard.get(Number(id), Number(startIndex))
+    res.send(data)
   } catch (e) {
-    res.status(403).send(e.message)
+    next(createError(e.status, e))
   }
 })
 
-router.post('/', async (req, res) => {
-  const { title = '', description = '', photos = [] } = req.body
+router.post('/', async (req, res, next) => {
+  const { title = '', description = '', contents = [] } = req.body
   try {
-    await mysql.addBoard({ title, description, photos })
-    res.send('success')
+    await serviceBoard.add(title, description, contents)
+    res.send({})
     return
   } catch (e) {
-    res.status(403).send(e.message)
+    next(createError(e.status, e))
   }
 })
 

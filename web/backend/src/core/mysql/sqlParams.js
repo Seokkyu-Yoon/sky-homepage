@@ -43,17 +43,20 @@ function createTableBoard () {
   }
 }
 
-function createTablePhoto () {
+function createTableContent () {
   return {
     sql: `
-    CREATE TABLE photo (
+    CREATE TABLE content (
       id INT NOT NULL AUTO_INCREMENT,
+      writter VARCHAR(20) NOT NULL,
+      type VARCHAR(10) NOT NULL,
       path TEXT NOT NULL,
       size INT NOT NULL,
       unit VARCHAR(5) NOT NULL,
       ext VARCHAR(5) NOT NULL,
       upload_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      PRIMARY KEY (id)
+      PRIMARY KEY (id),
+      FOREIGN KEY (writter) REFERENCES user (id) ON UPDATE CASCADE ON DELETE CASCADE
     )
     `,
     params: []
@@ -75,15 +78,15 @@ function createTableBoardUser () {
   }
 }
 
-function createTableBoardPhoto () {
+function createTableBoardContent () {
   return {
     sql: `
-    CREATE TABLE board_photo (
+    CREATE TABLE board_content (
       board_id INT NOT NULL,
-      photo_id INT NOT NULL,
-      PRIMARY KEY (board_id, photo_id),
+      content_id INT NOT NULL,
+      PRIMARY KEY (board_id, content_id),
       FOREIGN KEY (board_id) REFERENCES board (id) ON UPDATE CASCADE ON DELETE CASCADE,
-      FOREIGN KEY (photo_id) REFERENCES photo (id) ON UPDATE CASCADE ON DELETE CASCADE
+      FOREIGN KEY (content_id) REFERENCES content (id) ON UPDATE CASCADE ON DELETE CASCADE
     )
     `,
     params: []
@@ -165,9 +168,9 @@ function get (action, payload = {}) {
   if (action === 'selectAllTableNames') return selectAllTableNames(payload)
   if (action === 'createTableUser') return createTableUser(payload)
   if (action === 'createTableBoard') return createTableBoard(payload)
-  if (action === 'createTablePhoto') return createTablePhoto(payload)
+  if (action === 'createTableContent') return createTableContent(payload)
   if (action === 'createTableBoardUser') return createTableBoardUser(payload)
-  if (action === 'createTableBoardPhoto') return createTableBoardPhoto(payload)
+  if (action === 'createTableBoardContent') return createTableBoardContent(payload)
 
   if (action === 'selectUser') return selectUser(payload)
   if (action === 'insertUser') return insertUser(payload)

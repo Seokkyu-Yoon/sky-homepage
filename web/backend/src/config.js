@@ -15,7 +15,12 @@ const ConfigMysql = {
   charset: 'utf8mb4'
 }
 
+const ConfigCookie = {
+  maxAge: 2592000000 // millisecond on one month
+}
+
 export {
   ConfigPino,
-  ConfigMysql
+  ConfigMysql,
+  ConfigCookie
 }
