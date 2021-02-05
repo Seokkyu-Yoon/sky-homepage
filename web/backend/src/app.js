@@ -36,6 +36,7 @@ app.all('/*', async (req, res, next) => {
   try {
     const { accessToken = null } = req.cookies
     if (accessToken === null) throw new TokenNotFoundError()
+
     const { refreshToken } = await serviceAuth.auth(accessToken)
     res.cookie('accessToken', refreshToken, ConfigCookie)
     next()

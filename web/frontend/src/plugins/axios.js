@@ -12,7 +12,7 @@ const pluginAxios = {
           withCredentials: true
         })
           .then(resolve)
-          .catch((e) => reject(e.response.data || e.message))
+          .catch((e) => reject(e.response.data || e))
       }),
       $post: (route, data) => new Promise((resolve, reject) => {
         $axios({
@@ -22,7 +22,7 @@ const pluginAxios = {
           withCredentials: true
         })
           .then(resolve)
-          .catch(e => reject(e.response.data || e.message))
+          .catch(e => reject(e.response.data || e))
       })
     })
   }

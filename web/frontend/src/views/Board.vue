@@ -1,8 +1,13 @@
 <template>
   <div>
     <h1>Board</h1>
-    <b-button>글쓰기</b-button>
-    <b-table :items="boards" :fields="fields"></b-table>
+    <b-form-group class="mx-5">
+      <b-button>글쓰기</b-button>
+      <b-input />
+      <b-table hover bordered :items="boards" :fields="fields">
+      </b-table>
+    </b-form-group>
+
   </div>
 </template>
 
@@ -22,7 +27,35 @@ export default {
   },
   beforeCreate () {
     this.$get('/api/board').then(({ data: { boards, count } }) => {
-      this.boards = []
+      this.boards = [
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' },
+        { uploadAt: new Date(), writter: 'dummy', title: 'test' }
+      ]
       this.startIndex += count
     }).catch(console.error)
   }
