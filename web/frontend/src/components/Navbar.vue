@@ -10,7 +10,9 @@
           buttons
         />
       </b-form-group>
-      {{$store.state.user.name}}님 환영합니다
+      <div>
+        {{$store.state.user.name}}님 환영합니다
+      </div>
       <b-btn class="ml-2" v-on:click="signOut">logout</b-btn>
     </div>
   </b-navbar>
