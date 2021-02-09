@@ -4,10 +4,10 @@
   "description": "--- ## introduction I will make my homepage with web, desktop app, and mobile",
   "main": "index.js",
   "scripts": {
-    "start": "docker-compose up -d",
+    "start": "node init.js && docker-compose up -d",
     "connect": "docker exec -it homepage-db bash",
     "stop": "docker-compose down",
-    "clear": "rm -rf mysql"
+    "clear": "rm -rf mysql storage"
   },
   "repository": {
     "type": "git",

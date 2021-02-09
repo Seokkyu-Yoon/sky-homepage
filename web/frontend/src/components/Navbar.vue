@@ -1,19 +1,18 @@
 <template>
   <b-navbar variant="primary">
     <div v-if="typeof $store.state.user.id === 'undefined'">로그인이 필요합니다</div>
-    <div v-else class="d-flex align-items-center w-100">
-      <b-form-group class="my-auto mr-auto" v-slot="{ ariaDescribedby }">
-        <b-form-radio-group
-          v-model="currRoutePath"
-          :options="options"
-          :aria-describedby="ariaDescribedby"
-          buttons
-        />
-      </b-form-group>
-      <div>
+    <div v-else class="d-flex align-items-center w-100 overflow-hidden">
+      <b-btn
+        v-for="({path, name}) in $router.options.routes"
+        v-bind:key="path"
+        :pressed="path === $router.currentRoute.path"
+        v-on:click="() => changeView(path)">
+        {{name}}
+      </b-btn>
+      <div class="flex-fill mx-2 welcome">
         {{$store.state.user.name}}님 환영합니다
       </div>
-      <b-btn class="ml-2" v-on:click="signOut">logout</b-btn>
+      <b-btn v-on:click="signOut">logout</b-btn>
     </div>
   </b-navbar>
 </template>
@@ -21,23 +20,15 @@
 <script>
 export default {
   name: 'navbar',
-  data () {
-    return {
-      currRoutePath: this.$router.currentRoute.path,
-      options: this.$router.options.routes.map(({ path: value, name: text }) => ({ text, value }))
-    }
-  },
   methods: {
+    changeView (path) {
+      if (path === this.$router.currentRoute.path) return
+      this.$router.replace(path)
+      this.$forceUpdate()
+    },
     signOut () {
       this.$cookies.remove('accessToken')
       this.$store.commit('signout')
-    }
-  },
-  watch: {
-    currRoutePath: {
-      handler (path) {
-        this.$router.replace(path)
-      }
     }
   }
 }
@@ -48,5 +39,12 @@ export default {
   color: white;
   font-weight: 600;
   height: 54px;
+}
+
+.welcome {
+  text-align: end;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex" id="app">
     <div v-if="loading">로딩 중...({{loadingCount}}초 경과)</div>
-    <div class="d-flex flex-column flex-fill" v-else>
+    <div class="d-flex flex-column flex-fill overflow-hidden" v-else>
       <Navbar />
       <Sign v-if="isShowSign" class="sign"/>
       <router-view v-else />
@@ -82,6 +82,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
+  overflow: hidden;
   color: #2c3e50;
 }
 

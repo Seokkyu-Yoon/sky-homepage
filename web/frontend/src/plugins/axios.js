@@ -11,7 +11,7 @@ const pluginAxios = {
           params,
           withCredentials: true
         })
-          .then(resolve)
+          .then(({ data }) => resolve(data))
           .catch((e) => reject(e.response.data || e))
       }),
       $post: (route, data) => new Promise((resolve, reject) => {
