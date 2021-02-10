@@ -9,7 +9,7 @@
         <b-form-input placeholder="검색"></b-form-input>
       </div>
       <div>
-        <b-button>검색</b-button>
+        <b-button variant="info">검색</b-button>
       </div>
     </div>
     <div class="d-flex align-items-center py-2 px-3">
@@ -22,12 +22,12 @@
     </div>
     <div class="d-flex flex-column flex-fill px-3 mb-5 overflow-auto">
       <div class="d-flex align-items-center my-1" v-for="board in boards" v-bind:key="board.id">
-        <div class="check-slot"><b-check v-on:change="checkOnChange" v-model="board.checked"/></div>
+        <div class="check-slot"><b-check v-visible="isWritter(board)" v-on:change="checkOnChange" v-model="board.checked"/></div>
         <div class="d-none d-sm-block upload-at">{{formatter.time(board.uploadAt)}}</div>
         <div class="d-none d-md-block writter">{{board.writter}}</div>
         <div class="flex-fill title title-content">{{board.title}}</div>
-        <div><b-btn class="btn-sm ml-1" v-on:click="() => deleteBoard(board.id)">삭제</b-btn></div>
-        <div><b-btn class="btn-sm ml-1" v-on:click="() => showBoard(board)">보기</b-btn></div>
+        <div><b-btn class="btn-sm ml-1" variant="danger" v-visible="isWritter(board)" v-on:click="() => deleteBoard(board)">삭제</b-btn></div>
+        <div><b-btn class="btn-sm ml-1" variant="info" v-on:click="() => showBoard(board)">보기</b-btn></div>
       </div>
     </div>
   </div>
@@ -56,7 +56,7 @@ export default {
   },
   computed: {
     isAllBoardChecked () {
-      return this.boards.every(({ checked }) => checked)
+      return this.boards.filter(this.isWritter).every(({ checked }) => checked)
     }
   },
   methods: {
@@ -71,21 +71,29 @@ export default {
     checkOnChange () {
       this.checkAll = this.isAllBoardChecked
     },
-    deleteBoard (boardId) {
-      const boardIndex = this.boards.findIndex(({ id }) => id === boardId)
+    isWritter (board) {
+      return this.$store.state.user.name === board.writter
+    },
+    async deleteBoard (board) {
+      if (!this.isWritter(board)) return
+      const boardIndex = this.boards.findIndex(({ id }) => id === board.id)
+
       if (boardIndex < 0) return
       this.boards.splice(boardIndex, 1)
-      console.log(boardId)
+      console.log(board.id)
     },
     deleteBoards () {
-      this.boards = this.boards.reduce((bucket, board) => {
-        if (board.checked) {
-          console.log(board.id)
+      const { boards, removes } = this.boards.reduce((bucket, board) => {
+        if (board.checked && (board.writter === this.$store.state.user.name)) {
+          bucket.removes.push(board)
         } else {
-          bucket.push(board)
+          bucket.boards.push({ ...board, checked: false })
         }
         return bucket
-      }, [])
+      }, { boards: [], removes: [] })
+      this.boards = boards
+      console.log(removes)
+      this.checkAll = false
     }
   },
   beforeMount () {
