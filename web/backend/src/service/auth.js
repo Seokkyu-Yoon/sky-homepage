@@ -16,9 +16,8 @@ async function auth (accessToken) {
   if (accessToken === null) return {}
 
   try {
-    const { data: { id, pw } } = await jwt.verify(accessToken)
-    const { name } = await mysql.signIn({ id, pw })
-    const refreshToken = await jwt.publish({ id, pw })
+    const { data: { id, name } } = await jwt.verify(accessToken)
+    const refreshToken = await jwt.publish({ id, name })
     return { id, name, refreshToken }
   } catch (e) {
     throw new InvalidTokenError()
@@ -33,7 +32,7 @@ async function signin (inputId, inputPw) {
 
   try {
     const { name } = await mysql.signIn({ id, pw })
-    const accessToken = await jwt.publish({ id, pw })
+    const accessToken = await jwt.publish({ id, name })
     return { id, name, accessToken }
   } catch (e) {
     throw new InvalidSigninError()
@@ -55,6 +54,7 @@ async function signup (inputId, inputPw, inputName) {
     throw new InvalidSignupError()
   }
 }
+
 export default {
   auth,
   signin,

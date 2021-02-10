@@ -4,7 +4,6 @@ import jwt from './index'
 test('jwt', (t) => {
   const data = {
     id: 'test',
-    pw: 'test',
     name: '테스트'
   }
 

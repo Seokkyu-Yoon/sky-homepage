@@ -16,8 +16,11 @@ router.get('/', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   const { title = '', description = '', contents = [] } = req.body
+  const { accessToken = null } = req.cookies
+
+  console.log(accessToken, title, description, contents)
   try {
-    await serviceBoard.add(title, description, contents)
+    await serviceBoard.add(accessToken, title, description, contents)
     res.send({})
     return
   } catch (e) {

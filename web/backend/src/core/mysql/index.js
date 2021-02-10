@@ -6,7 +6,6 @@ const TABLE_CREATE_MAP = {
   user: exec.bind(null, 'createTableUser'),
   board: exec.bind(null, 'createTableBoard'),
   content: exec.bind(null, 'createTableContent'),
-  board_user: exec.bind(null, 'createTableBoardUser'),
   board_content: exec.bind(null, 'createTableBoardContent')
 }
 
@@ -54,20 +53,19 @@ const getBoards = async (payload = {}) => {
   return { boards, count }
 }
 const getBoard = async (payload = {}) => {
-  const result = await exec.bind('selectBoard', payload)
+  const result = await exec('selectBoard', payload)
   const board = result[0]
   return board
 }
 const addBoard = async (payload = {}) => {
   const actionsInsertBoard = [
     'insertBoard',
-    'setBoardId',
-    'insertBoardUser'
+    'setBoardId'
   ]
+  console.log(payload)
   await transaction(actionsInsertBoard, payload)
 
   if (payload.contents.length < 1) return
-  // todo upload files first
   const actionsInsertContents = [
     'insertContent',
     'setContentId',
@@ -75,11 +73,10 @@ const addBoard = async (payload = {}) => {
   ]
   await Promise.all(
     payload.contents.map(
-      (content) => transaction(
-        actionsInsertContents,
-        { ...payload, ...content }
-      )
-    )
+      (content) => {
+        // todo upload files first
+        return transaction(actionsInsertContents, { ...payload, ...content })
+      })
   )
 }
 

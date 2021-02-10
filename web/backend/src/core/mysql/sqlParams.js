@@ -65,21 +65,6 @@ function createTableContent () {
   }
 }
 
-function createTableBoardUser () {
-  return {
-    sql: `
-    CREATE TABLE board_user (
-      user_id VARCHAR(20) NOT NULL,
-      board_id INT NOT NULL,
-      PRIMARY KEY (user_id, board_id),
-      FOREIGN KEY (user_id) REFERENCES user (id) ON UPDATE CASCADE ON DELETE CASCADE,
-      FOREIGN KEY (board_id) REFERENCES board (id) ON UPDATE CASCADE ON DELETE CASCADE
-    )
-    `,
-    params: []
-  }
-}
-
 function createTableBoardContent () {
   return {
     sql: `
@@ -142,8 +127,9 @@ function selectBoards ({ startIndex = 0 }) {
   if (startIndex < 0) throw new Error('startIndex is must upper than 0')
   return {
     sql: `
-    SELECT *
+    SELECT board.id, board.title, board.description, user.name AS writter
     FROM board
+    LEFT JOIN user ON user.id = board.writter
     LIMIT ? OFFSET ?
     `,
     params: [
@@ -159,8 +145,9 @@ function selectBoard ({ id = -1 }) {
 
   return {
     sql: `
-    SELECT *
+    SELECT board.id, board.title, board.description, user.name AS writter
     FROM board
+    LEFT JOIN user ON user.id = board.writter
     WHERE id=?
     `,
     params: [
@@ -196,24 +183,11 @@ function setBoardId () {
   }
 }
 
-function insertBoardUser ({ userId = '' }) {
-  return {
-    sql: `
-    INSERT INTO board_user (board_id, user_id) VALUES
-    ((SELECT @board_id), ?)
-    `,
-    params: [
-      userId
-    ]
-  }
-}
-
 function get (action, payload = {}) {
   if (action === 'selectAllTableNames') return selectAllTableNames(payload)
   if (action === 'createTableUser') return createTableUser(payload)
   if (action === 'createTableBoard') return createTableBoard(payload)
   if (action === 'createTableContent') return createTableContent(payload)
-  if (action === 'createTableBoardUser') return createTableBoardUser(payload)
   if (action === 'createTableBoardContent') return createTableBoardContent(payload)
 
   if (action === 'selectUser') return selectUser(payload)
@@ -223,9 +197,8 @@ function get (action, payload = {}) {
   if (action === 'selectBoard') return selectBoard(payload)
   if (action === 'insertBoard') return insertBoard(payload)
   if (action === 'setBoardId') return setBoardId(payload)
-  if (action === 'insertBoardUser') return insertBoardUser(payload)
 
-  throw new Error('not defined action')
+  throw new Error(`not defined action: ${action}`)
 }
 
 export default get
