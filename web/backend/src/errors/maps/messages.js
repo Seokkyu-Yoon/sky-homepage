@@ -7,5 +7,6 @@ export default {
   inputPw: '비밀번호를 입력해주세요',
   inputName: '이름을 입력해주세요',
   failToGetBoard: '게시판 정보를 가져오는데 실패했습니다',
-  failToAddBoard: '게시판을 추가하는데 실패했습니다'
+  failToAddBoard: '게시판을 추가하는데 실패했습니다',
+  failToRemoveBoard: '게시판을 삭제하는데 실패했습니다'
 }

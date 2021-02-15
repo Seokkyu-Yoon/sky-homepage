@@ -49,5 +49,6 @@ export default {
   inputPw: BAD_REQUEST,
   inputName: BAD_REQUEST,
   failToGetBoard: BAD_REQUEST,
-  failToAddBoard: BAD_REQUEST
+  failToAddBoard: BAD_REQUEST,
+  failToRemoveBoard: BAD_REQUEST
 }

@@ -148,7 +148,7 @@ function selectBoard ({ id = -1 }) {
     SELECT board.id, board.title, board.description, user.name AS writter
     FROM board
     LEFT JOIN user ON user.id = board.writter
-    WHERE id=?
+    WHERE board.id=?
     `,
     params: [
       id
@@ -183,6 +183,16 @@ function setBoardId () {
   }
 }
 
+function deleteBoard ({ id }) {
+  return {
+    sql: `
+    DELETE FROM board
+    WHERE id=?
+    `,
+    params: [id]
+  }
+}
+
 function get (action, payload = {}) {
   if (action === 'selectAllTableNames') return selectAllTableNames(payload)
   if (action === 'createTableUser') return createTableUser(payload)
@@ -197,6 +207,7 @@ function get (action, payload = {}) {
   if (action === 'selectBoard') return selectBoard(payload)
   if (action === 'insertBoard') return insertBoard(payload)
   if (action === 'setBoardId') return setBoardId(payload)
+  if (action === 'deleteBoard') return deleteBoard(payload)
 
   throw new Error(`not defined action: ${action}`)
 }

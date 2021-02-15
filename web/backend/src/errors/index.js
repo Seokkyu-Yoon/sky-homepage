@@ -81,6 +81,15 @@ class FailToAddBoardError extends CustomError {
   }
 }
 
+class FailToRemoveBoardError extends CustomError {
+  constructor (...params) {
+    super('failToRemoveBoard', ...params)
+    if (CustomError.captureStackTrace) {
+      CustomError.captureStackTrace(this, FailToRemoveBoardError)
+    }
+  }
+}
+
 // class  extends CustomError {
 //   constructor (...params) {
 //     super(, ...params)
@@ -99,5 +108,6 @@ export {
   InputPwError,
   InputNameError,
   FailToGetBoardError,
-  FailToAddBoardError
+  FailToAddBoardError,
+  FailToRemoveBoardError
 }

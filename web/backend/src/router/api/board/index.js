@@ -18,9 +18,19 @@ router.post('/', async (req, res, next) => {
   const { title = '', description = '', contents = [] } = req.body
   const { accessToken = null } = req.cookies
 
-  console.log(accessToken, title, description, contents)
   try {
     await serviceBoard.add(accessToken, title, description, contents)
+    res.send({})
+    return
+  } catch (e) {
+    next(createError(e.status, e))
+  }
+})
+
+router.delete('/', async (req, res, next) => {
+  const { id = -1, writter = '' } = req.body
+  try {
+    await serviceBoard.remove(id, writter)
     res.send({})
     return
   } catch (e) {

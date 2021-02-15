@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import { addBoard } from '@/core/api-handle'
 export default {
   name: 'BoardUpsert',
   props: {
@@ -55,7 +56,7 @@ export default {
   },
   methods: {
     async upsert () {
-      await this.$post('/api/board', {
+      await addBoard({
         title: this.inputTitle,
         description: this.inputDescription,
         contents: this.inputContents

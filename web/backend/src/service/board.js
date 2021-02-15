@@ -1,6 +1,6 @@
 import jwt from '@/core/jwt'
 import mysql from '@/core/mysql'
-import { FailToAddBoardError, FailToGetBoardError } from '@/errors'
+import { FailToAddBoardError, FailToGetBoardError, FailToRemoveBoardError } from '@/errors'
 
 function get (id, startIndex) {
   try {
@@ -15,15 +15,22 @@ function get (id, startIndex) {
 async function add (accessToken, title, description, contents) {
   try {
     const { data: { id: writter } } = await jwt.verify(accessToken)
-    console.log(title, description, contents, writter)
     await mysql.addBoard({ title, description, contents, writter })
   } catch (e) {
-    console.log(e)
     throw new FailToAddBoardError()
+  }
+}
+
+async function remove (id, writter) {
+  try {
+    await mysql.removeBoard({ id, writter })
+  } catch (e) {
+    throw new FailToRemoveBoardError()
   }
 }
 
 export default {
   get,
-  add
+  add,
+  remove
 }

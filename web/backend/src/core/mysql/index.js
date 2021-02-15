@@ -38,9 +38,13 @@ const init = async (payload = {}) => {
   }
 }
 
-const signIn = async (payload = {}) => {
+const getUser = async (payload = {}) => {
   const result = await exec('selectUser', payload)
   const user = result[0]
+  return user
+}
+const signIn = async (payload = {}) => {
+  const user = await getUser(payload)
   if (typeof user === 'undefined') throw new Error('User not exists')
   if (user.pw !== payload.pw) throw new Error('Invalid to signIn')
   return user
@@ -62,7 +66,6 @@ const addBoard = async (payload = {}) => {
     'insertBoard',
     'setBoardId'
   ]
-  console.log(payload)
   await transaction(actionsInsertBoard, payload)
 
   if (payload.contents.length < 1) return
@@ -80,6 +83,15 @@ const addBoard = async (payload = {}) => {
   )
 }
 
+const removeBoard = async (payload = {}) => {
+  const board = await getBoard(payload)
+  if (typeof board === 'undefined') throw new Error('board is not exists')
+  if (board.writter !== payload.writter) throw new Error('writter can delete board')
+
+  console.log(payload)
+  await exec('deleteBoard', payload)
+}
+
 export default {
   init,
 
@@ -88,5 +100,6 @@ export default {
 
   getBoards,
   getBoard,
-  addBoard
+  addBoard,
+  removeBoard
 }

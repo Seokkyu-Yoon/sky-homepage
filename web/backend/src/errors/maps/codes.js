@@ -7,5 +7,6 @@ export default {
   inputPw: 302,
   inputName: 303,
   failToGetBoard: 401,
-  failToAddBoard: 402
+  failToAddBoard: 402,
+  failToRemoveBoard: 403
 }

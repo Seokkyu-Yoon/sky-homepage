@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="d-flex align-items-center py-2 px-3">
-      <div class="check-slot"><b-check v-model="checkAll"/></div>
+      <div class="check-slot"><b-check v-model="checkAll" :disabled="myBoards.length === 0"/></div>
       <div class="d-none d-sm-block upload-at">작성일</div>
       <div class="d-none d-md-block writter">작성자</div>
       <div class="flex-fill title">제목</div>
@@ -34,6 +34,8 @@
 </template>
 
 <script>
+import { getBoard, removeBoard } from '@/core/api-handle'
+
 export default {
   name: 'BoardMain',
   props: {
@@ -55,13 +57,16 @@ export default {
     }
   },
   computed: {
+    myBoards () {
+      return this.boards.filter(this.isWritter)
+    },
     isAllBoardChecked () {
-      return this.boards.filter(this.isWritter).every(({ checked }) => checked)
+      return this.myBoards.every(({ checked }) => checked)
     }
   },
   methods: {
     async getBoard () {
-      const { boards = [], count = 0 } = await this.$get('/api/board', { startIndex: this.startIndex })
+      const { boards = [], count = 0 } = await getBoard({ startIndex: this.startIndex })
       this.boards = boards.map((board) => ({ ...board, checked: false }))
       this.startIndex += count
     },
@@ -79,20 +84,29 @@ export default {
       const boardIndex = this.boards.findIndex(({ id }) => id === board.id)
 
       if (boardIndex < 0) return
+      const target = this.boards[boardIndex]
+      console.log(target)
+      await removeBoard({ id: target.id, writter: this.$store.state.user.name })
       this.boards.splice(boardIndex, 1)
-      console.log(board.id)
     },
-    deleteBoards () {
+    async deleteBoards () {
       const { boards, removes } = this.boards.reduce((bucket, board) => {
-        if (board.checked && (board.writter === this.$store.state.user.name)) {
+        if (board.checked && this.isWritter(board)) {
           bucket.removes.push(board)
         } else {
           bucket.boards.push({ ...board, checked: false })
         }
         return bucket
       }, { boards: [], removes: [] })
+
+      await Promise.all(
+        removes.map((target) => removeBoard({
+          id: target.id,
+          writter: this.$store.state.user.name
+        }))
+      )
+
       this.boards = boards
-      console.log(removes)
       this.checkAll = false
     }
   },

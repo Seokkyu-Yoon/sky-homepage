@@ -26,6 +26,7 @@
 <script>
 import Signin from '@/components/Signin.vue'
 import Signup from '@/components/Signup.vue'
+import { signin, signup } from '@/core/api-handle'
 
 export default {
   name: 'sign',
@@ -62,15 +63,21 @@ export default {
     moveToSignin () {
       this.moveTo('in')
     },
-    signin (id, pw) {
-      this.$post('/auth/signin', { id, pw })
-        .then(this.successToSign)
-        .catch(this.failToSignin)
+    async signin (id, pw) {
+      try {
+        const data = await signin({ id, pw })
+        this.successToSign(data)
+      } catch (e) {
+        this.failToSignin(e)
+      }
     },
-    signup (id, pw, name) {
-      this.$post('/auth/signup', { id, pw, name })
-        .then(this.successToSign)
-        .catch(this.failToSignup)
+    async signup (id, pw, name) {
+      try {
+        const data = await signup({ id, pw, name })
+        this.successToSign(data)
+      } catch (e) {
+        this.failToSignup(e)
+      }
     },
     showAlert (message) {
       this.alertMessage = message

@@ -12,6 +12,7 @@
 <script>
 import Navbar from '@/components/Navbar.vue'
 import Sign from '@/views/Sign.vue'
+import { auth } from '@/core/api-handle'
 
 export default {
   name: 'App',
@@ -45,7 +46,7 @@ export default {
       this.loading = false
     },
     async autoLogin (accessToken) {
-      const { data: user } = await this.$post('/auth', { accessToken })
+      const { data: user } = await auth({ accessToken })
       this.$store.commit('signin', user)
     }
   },
